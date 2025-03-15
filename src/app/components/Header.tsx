@@ -17,11 +17,9 @@ import { styled } from '@mui/material/styles';
 const pages = ['Products', 'Pricing', 'Blog', 'Host'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-// Estiliza el componente Button para cambiar el fondo al pasar el mouse
 const StyledButton = styled(Button)({
-  //fontSize: '25px',
   '&:hover': {
-    backgroundColor:'rgb(89, 151, 61)', // Fondo negro al pasar el mouse
+    backgroundColor:'rgb(89, 151, 61)',
   },
 });
 
