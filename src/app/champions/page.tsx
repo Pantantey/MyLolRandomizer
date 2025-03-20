@@ -12,16 +12,18 @@ interface Champion {
 }
 
 export default function Champions() {
+  const version = "15.6.1";
   const [champions, setChampions] = useState<Champion[]>([]);
   const [filteredChampions, setFilteredChampions] = useState<Champion[]>([]);
   const [search, setSearch] = useState("");
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
-  const version = "15.5.1";
 
   useEffect(() => {
     async function fetchChampions() {
       try {
-        const res = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`);
+        const res = await fetch(
+          `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`
+        );
         const localRes = await fetch("/data/championData.json");
         if (!res.ok || !localRes.ok) {
           throw new Error(`Error HTTP: ${res.status}`);
@@ -32,7 +34,7 @@ export default function Champions() {
         const championsArray = Object.keys(riotData.data).map((key) => {
           return {
             id: key,
-            roles: localData[key]?.roles || []
+            roles: localData[key]?.roles || [],
           };
         });
 
@@ -47,8 +49,10 @@ export default function Champions() {
   }, []);
 
   useEffect(() => {
-    let results = champions.filter((champ) => champ.id.toLowerCase().includes(search.toLowerCase()));
-    
+    let results = champions.filter((champ) =>
+      champ.id.toLowerCase().includes(search.toLowerCase())
+    );
+
     if (selectedRole) {
       results = results.filter((champ) => champ.roles?.includes(selectedRole));
     }
@@ -59,27 +63,36 @@ export default function Champions() {
   return (
     <div>
       <Header />
-      <div className="flex flex-col items-center gap-4 p-8">
-        <SearchBar search={search} setSearch={setSearch} selectedRole={selectedRole} setSelectedRole={setSelectedRole} />
-        <div className="flex flex-wrap justify-center gap-6 mt-4">
-          {filteredChampions.length > 0 ? (
-            filteredChampions.map((champ) => (
-              <div key={champ.id} className="text-center">
-                <Link href={`/champions/${champ.id}`}>
-                  <Image
-                    src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champ.id}.png`}
-                    alt={`Imagen de ${champ.id}`}
-                    width={90}
-                    height={90}
-                    className="rounded-lg cursor-pointer"
-                  />
-                </Link>
-                <p className="mt-2 font-semibold text-sm">{champ.id}</p>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-400">No se encontraron campeones.</p>
-          )}
+      <div className="flex justify-center ">
+        <div className="flex flex-col items-center gap-4 py-5 my-8 mx-4 max-w-5xl min-h-[500px] border-2 border-[#CBAB70]">
+          <div className="border-b border-[#CBAB70] pb-2 px-2">
+            <SearchBar
+              search={search}
+              setSearch={setSearch}
+              selectedRole={selectedRole}
+              setSelectedRole={setSelectedRole}
+            />
+          </div>
+          <div className="flex flex-wrap justify-center gap-4 mt-4 items-center">
+            {filteredChampions.length > 0 ? (
+              filteredChampions.map((champ) => (
+                <div key={champ.id} className="text-center">
+                  <Link href={`/champions/${champ.id}`}>
+                    <Image
+                      src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champ.id}.png`}
+                      alt={`Imagen de ${champ.id}`}
+                      width={80}
+                      height={80}
+                      className="rounded-lg cursor-pointer"
+                    />
+                  </Link>
+                  <p className="mt-2 font-semibold text-sm">{champ.id}</p>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-400">No se encontraron campeones.</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
