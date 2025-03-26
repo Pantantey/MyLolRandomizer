@@ -1,10 +1,17 @@
 "use client";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Header from "@/app/components/Header";
 import Card from "./components/Card";
 
-const icons = ["TopIcon.png", "JgIcon.png", "MidIcon.png", "AdcIcon.png", "SuppIcon.png", "FillIcon.png"];
+const icons = [
+  "TopIcon.png",
+  "JgIcon.png",
+  "MidIcon.png",
+  "AdcIcon.png",
+  "SuppIcon.png",
+  "FillIcon.png",
+];
+
 const rolesMap: Record<string, string | null> = {
   "TopIcon.png": "Top",
   "JgIcon.png": "Jg",
@@ -13,7 +20,6 @@ const rolesMap: Record<string, string | null> = {
   "SuppIcon.png": "Supp",
   "FillIcon.png": null,
 };
-
 
 type Champion = {
   id: string;
@@ -29,45 +35,173 @@ type ChampionRoles = {
 };
 
 export default function Home() {
-  const version = '15.6.1'
+  const version = "15.6.1";
+
   const [cards, setCards] = useState([
-    { id: 1, name: "Player1", imageName: "MidIcon.png", description: "Campeón" },
+    {
+      id: 1,
+      name: "Player 1",
+      role: "FillIcon.png",
+      champion: {
+        id: "Ziggs",
+        name: "Ziggs",
+        imageUrl:
+          "https://ddragon.leagueoflegends.com/cdn/15.6.1/img/champion/Ziggs.png",
+      } as { id: string; name: string; imageUrl: string } | null,
+    },
   ]);
-  const [randomChampion, setRandomChampion] = useState<{ name: string; imageUrl: string } | null>(null);
-  const [iconIndex, setIconIndex] = useState(0);
-  const [isLocked, setIsLocked] = useState(false);
-  const [championRoles, setChampionRoles] = useState<ChampionRoles | null>(null);
+  const [championRoles, setChampionRoles] = useState<ChampionRoles | null>(
+    null
+  );
+  const [lockedRoles, setLockedRoles] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
-    if (championRoles) {
-      generateRandomChampion();
-    }
-  }, [championRoles]);
-
-  useEffect(() => {
-    const fetchChampionRoles = async () => {
+    const fetchChampionData = async () => {
       try {
-        const response = await fetch("/data/championData.json");
-        const data: ChampionRoles = await response.json();
-        setChampionRoles(data);
+        const rolesResponse = await fetch("/data/championData.json");
+        const rolesData: ChampionRoles = await rolesResponse.json();
+        setChampionRoles(rolesData);
       } catch (error) {
-        console.error("Error fetching champion role data:", error);
+        console.error("Error fetching champion data:", error);
       }
     };
-    fetchChampionRoles();
+
+    fetchChampionData();
   }, []);
 
-  const addCard = () => {
+  const getRandomChampionByRole = (role: string, champions: Champion[]) => {
+    if (!championRoles) return null;
+    const selectedRole = rolesMap[role];
+
+    let filteredChampions: Champion[] = [];
+    if (selectedRole) {
+      filteredChampions = champions.filter((champion) => {
+        const champData = championRoles[champion.id];
+        return champData && champData.roles.includes(selectedRole);
+      });
+    } else {
+      filteredChampions = champions;
+    }
+
+    const newChampion =
+      filteredChampions.length > 0
+        ? filteredChampions[
+            Math.floor(Math.random() * filteredChampions.length)
+          ]
+        : null;
+
+    return newChampion
+      ? {
+          id: newChampion.id,
+          name: newChampion.name,
+          imageUrl: `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${newChampion.image.full}`,
+        }
+      : null;
+  };
+
+  const generateRandomForAllCards = async () => {
+    try {
+      const response = await fetch(
+        `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`
+      );
+      const data = await response.json();
+      const champions = Object.values(data.data) as Champion[];
+  
+      if (!championRoles) return;
+  
+      setCards((prevCards) => {
+        const lockedRolesSet = new Set(
+          prevCards.filter((card) => lockedRoles[card.id]).map((card) => card.role)
+        );
+  
+        let availableRoles = icons.filter(
+          (role) => role !== "FillIcon.png" && !lockedRolesSet.has(role)
+        );
+  
+        availableRoles = availableRoles.sort(() => Math.random() - 0.5);
+  
+        let roleIndex = 0;
+        const usedChampionIds = new Set<string>();  // Aquí almacenamos los campeones ya utilizados
+  
+        return prevCards.map((card) => {
+          let newRole = card.role;
+  
+          if (!lockedRoles[card.id]) {
+            newRole = availableRoles[roleIndex] || "FillIcon.png";
+            roleIndex++;
+          }
+  
+          // Aquí seleccionamos un campeón aleatorio que no haya sido usado aún
+          let newChampion = getRandomChampionByRole(newRole, champions);
+          
+          // Aseguramos que el campeón sea único
+          while (newChampion && usedChampionIds.has(newChampion.id)) {
+            newChampion = getRandomChampionByRole(newRole, champions);  // Generamos uno nuevo
+          }
+  
+          // Si encontramos un campeón único, lo agregamos al set de usados
+          if (newChampion) {
+            usedChampionIds.add(newChampion.id);
+          }
+  
+          return {
+            ...card,
+            role: newRole,
+            champion: newChampion,
+          };
+        });
+      });
+    } catch (error) {
+      console.error("Error fetching champion data:", error);
+    }
+  };
+  
+  
+
+  const addCard = async () => {
     if (cards.length < 5) {
-      setCards((prevCards) => [
-        ...prevCards,
-        {
-          id: prevCards.length + 1,
-          name: `Player${prevCards.length + 1}`,
-          imageName: "MidIcon.png",
-          description: "Campeon",
-        },
-      ]);
+      try {
+        const response = await fetch(
+          `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`
+        );
+        const data = await response.json();
+        const champions = Object.values(data.data) as Champion[];
+
+        const assignedRoles = new Set(cards.map((card) => card.role));
+
+        const availableRoles = icons.filter(
+          (icon) => icon !== "FillIcon.png" && !assignedRoles.has(icon)
+        );
+
+        if (availableRoles.length === 0) {
+          console.warn("No hay roles disponibles");
+          return;
+        }
+
+        const newRole =
+          availableRoles[Math.floor(Math.random() * availableRoles.length)];
+        const newChampion = getRandomChampionByRole(newRole, champions);
+
+        setCards((prevCards) => {
+          const newId = prevCards.length + 1;
+          return [
+            ...prevCards,
+            {
+              id: newId,
+              name: `Player ${newId}`,
+              role: newRole,
+              champion: newChampion,
+            },
+          ];
+        });
+
+        setLockedRoles((prevState) => ({
+          ...prevState,
+          [cards.length + 1]: false,
+        }));
+      } catch (error) {
+        console.error("Error fetching champion data:", error);
+      }
     }
   };
 
@@ -77,119 +211,61 @@ export default function Home() {
     }
   };
 
-  const generateRandomChampion = async () => {
-    try {
-      const response = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`);
-      const data = await response.json();
-      const champions = Object.values(data.data) as Champion[];
-  
-      if (!championRoles) return;
-  
-      if (!isLocked) {
-        // Filtrar los íconos para que no incluya FillIcon
-        const filteredIcons = icons.filter((icon) => icon !== "FillIcon.png");
-        const randomIconIndex = Math.floor(Math.random() * filteredIcons.length);
-        const selectedIcon = filteredIcons[randomIconIndex];
-  
-        setIconIndex(icons.indexOf(selectedIcon)); // Buscar el índice correcto en la lista original
-  
-        setTimeout(() => {
-          const selectedRole = rolesMap[selectedIcon];
-  
-          let filteredChampions: Champion[];
-          if (selectedRole) {
-            filteredChampions = champions.filter((champion) => {
-              const champData = championRoles[champion.id];
-              return champData && champData.roles.includes(selectedRole);
-            });
-          } else {
-            filteredChampions = champions;
-          }
-  
-          if (filteredChampions.length > 0) {
-            const randomChampion = filteredChampions[Math.floor(Math.random() * filteredChampions.length)];
-            setRandomChampion({
-              name: randomChampion.name,
-              imageUrl: `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${randomChampion.image.full}`,
-            });
-          } else {
-            console.warn("No champions found for role", selectedRole);
-          }
-        }, 0);
-      } else {
-        const selectedIcon = icons[iconIndex];
-        const selectedRole = rolesMap[selectedIcon];
-  
-        let filteredChampions: Champion[];
-        if (selectedRole) {
-          filteredChampions = champions.filter((champion) => {
-            const champData = championRoles[champion.id];
-            return champData && champData.roles.includes(selectedRole);
-          });
-        } else {
-          filteredChampions = champions;
-        }
-  
-        if (filteredChampions.length > 0) {
-          const randomChampion = filteredChampions[Math.floor(Math.random() * filteredChampions.length)];
-          setRandomChampion({
-            name: randomChampion.name,
-            imageUrl: `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${randomChampion.image.full}`,
-          });
-        } else {
-          console.warn("No champions found for role", selectedRole);
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching champion data:", error);
-    }
+  const toggleLockRole = (cardId: number) => {
+    setLockedRoles((prevState) => ({
+      ...prevState,
+      [cardId]: !prevState[cardId],
+    }));
   };
   
-  
-
-  const changeIcon = () => {
-    if (!isLocked) {
-      setIconIndex((prevIndex) => (prevIndex + 1) % icons.length);
-    }
-  };
 
   return (
     <div>
       <Header />
       <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen font-[family-name:var(--font-geist-sans)]">
         <main className="flex flex-col gap-8 row-start-2 items-center">
-          {randomChampion && (
-            <div className="flex items-center gap-4">
-              <div className="flex flex-col items-center">
-                <Image src={randomChampion.imageUrl} alt={randomChampion.name} width={100} height={100} className="rounded-lg" />
-                <h3 className="text-lg font-bold">{randomChampion.name}</h3>
-              </div>
-              <div className="flex items-center gap-2">
-                <Image
-                  src={`/Icons/${icons[iconIndex]}`}
-                  alt="Role Icon"
-                  width={50}
-                  height={50}
-                  className={`rounded-lg cursor-pointer ${isLocked ? "opacity-50" : ""}`}
-                  onClick={changeIcon}
-                />
-                <button onClick={() => setIsLocked(!isLocked)} className="p-2 rounded bg-gray-800 hover:bg-gray-700">
-                  {isLocked ? "🔒" : "🔓"}
-                </button>
-              </div>
-            </div>
-          )}
           <div className="flex w-full justify-center gap-2">
             <h2 className="text-xl font-bold">Equipo:</h2>
             <div className="flex gap-2 ms-2">
-              <button onClick={removeCard} disabled={cards.length <= 1} className={`text-white font-bold px-3 py-1 rounded ${cards.length > 1 ? "bg-red-500 hover:bg-red-700" : "bg-gray-400 cursor-not-allowed"}`}>-</button>
-              <button onClick={addCard} disabled={cards.length >= 5} className={`text-white font-bold px-3 py-1 rounded ${cards.length < 5 ? "bg-blue-500 hover:bg-blue-700" : "bg-gray-400 cursor-not-allowed"}`}>+</button>
-              <button onClick={generateRandomChampion} className="text-white font-bold px-3 py-1 rounded bg-green-500 hover:bg-green-700">R</button>
+              <button
+                onClick={removeCard}
+                disabled={cards.length <= 1}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold px-3 py-1 rounded disabled:bg-gray-400"
+              >
+                -
+              </button>
+              <button
+                onClick={addCard}
+                disabled={cards.length >= 5}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-3 py-1 rounded disabled:bg-gray-400"
+              >
+                +
+              </button>
+              <button
+                onClick={generateRandomForAllCards}
+                className="bg-green-500 hover:bg-green-700 text-white font-bold px-3 py-1 rounded"
+              >
+                R
+              </button>
             </div>
           </div>
           <div className="flex flex-wrap justify-center gap-4">
             {cards.map((card) => (
-              <Card key={card.id} initialName={card.name} imageName={card.imageName} description={card.description} />
+              <Card
+                key={card.id}
+                initialName={card.name}
+                role={card.role}
+                champion={card.champion}
+                isLocked={lockedRoles[card.id] || false}
+                changeIcon={() => toggleLockRole(card.id)}
+                setRole={(newRole) => {
+                  setCards((prevCards) =>
+                    prevCards.map((c) =>
+                      c.id === card.id ? { ...c, role: newRole } : c
+                    )
+                  );
+                }} // <-- Ahora actualiza el estado de Home
+              />
             ))}
           </div>
         </main>
