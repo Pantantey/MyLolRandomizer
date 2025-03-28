@@ -17,7 +17,7 @@ const pages = ['Inicio','Campeones'];
 
 const StyledButton = styled(Button)({
   '&:hover': {
-    backgroundColor:'rgb(89, 151, 61)',
+    backgroundColor:'#0f507c',
   },
 });
 
@@ -33,7 +33,7 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static" sx={{backgroundColor: '#333333'}}>
+    <AppBar position="static" sx={{backgroundColor: '#093a63', borderBottom: "1px solid #CBAB70"}}>
       <Container maxWidth="xl" sx={{display:'flex', justifyContent:'center'}}>
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
