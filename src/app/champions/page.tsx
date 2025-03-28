@@ -8,6 +8,7 @@ import SearchBar from "@/app/components/SearchBar";
 
 interface Champion {
   id: string;
+  name: string;
   roles?: string[];
 }
 
@@ -31,12 +32,11 @@ export default function Champions() {
         const riotData = await res.json();
         const localData = await localRes.json();
 
-        const championsArray = Object.keys(riotData.data).map((key) => {
-          return {
-            id: key,
-            roles: localData[key]?.roles || [],
-          };
-        });
+        const championsArray = Object.keys(riotData.data).map((key) => ({
+          id: key,
+          name: riotData.data[key].name,
+          roles: localData[key]?.roles || [],
+        }));
 
         setChampions(championsArray);
         setFilteredChampions(championsArray);
@@ -50,7 +50,7 @@ export default function Champions() {
 
   useEffect(() => {
     let results = champions.filter((champ) =>
-      champ.id.toLowerCase().includes(search.toLowerCase())
+      champ.name.toLowerCase().includes(search.toLowerCase())
     );
 
     if (selectedRole) {
@@ -61,10 +61,13 @@ export default function Champions() {
   }, [search, selectedRole, champions]);
 
   return (
-    <div>
+    <div
+      className="bg-cover bg-fixed"
+      style={{ backgroundImage: "url(/fondo2.png)" }}
+    >
       <Header />
-      <div className="flex justify-center ">
-        <div className="flex flex-col items-center gap-4 py-5 my-8 mx-4 max-w-5xl min-h-[500px] border-2 border-[#CBAB70]">
+      <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-4 py-5 my-8 mx-4 max-w-5xl min-h-[500px] border-2 border-[#CBAB70] bg-[#0a0a0a]">
           <div className="border-b border-[#CBAB70] pb-2 px-2">
             <SearchBar
               search={search}
@@ -80,13 +83,15 @@ export default function Champions() {
                   <Link href={`/champions/${champ.id}`}>
                     <Image
                       src={`https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champ.id}.png`}
-                      alt={`Imagen de ${champ.id}`}
-                      width={80}
-                      height={80}
+                      alt={`Imagen de ${champ.name}`}
+                      width={90}
+                      height={90}
                       className="rounded-lg cursor-pointer"
                     />
                   </Link>
-                  <p className="mt-2 font-semibold text-sm">{champ.id}</p>
+                  <p className="mt-2 font-semibold text-sm">
+                    {champ.name === "Nunu & Willump" ? "Nunu" : champ.name}
+                  </p>
                 </div>
               ))
             ) : (

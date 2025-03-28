@@ -923,15 +923,15 @@
         "MissFortune_r": "R: Canaliza una ráfaga de balas en forma de cono frente a ella que hacen daño a todos los enemigos."
       }
     },
-    "Wukong": {
+    "MonkeyKing": {
       "id": "Wukong",
       "roles": ["Top", "Jg"],
       "passiveDescription": "Pasiva: Obtiene armadura y regeneración de vida máxima que se acumulan al luchar contra campeones y monstruos.",
       "spellsDescription": {
-        "Wukong_q": "Q: El siguiente básico obtiene más rango, daño y reduce la armadura del objetivo.",
-        "Wukong_w": "W: Se vuelve invisible, se desplaza un poco en una dirección y deja un clon atrás que ataca a los enemigos cercanos.",
-        "Wukong_e": "E: Se lanza contra un enemigo cercano y envia imágenes que atacan otros enemigos cercanos a su objetivo.",
-        "Wukong_r": "R: Empieza a dar vueltas que levanta a los enemigos que alcanza y obtiene velocidad de movimiento. Se puede activar dos veces."
+        "MonkeyKing_q": "Q: El siguiente básico obtiene más rango, daño y reduce la armadura del objetivo.",
+        "MonkeyKing_w": "W: Se vuelve invisible, se desplaza un poco en una dirección y deja un clon atrás que ataca a los enemigos cercanos.",
+        "MonkeyKing_e": "E: Se lanza contra un enemigo cercano y envia imágenes que atacan otros enemigos cercanos a su objetivo.",
+        "MonkeyKing_r": "R: Empieza a dar vueltas que levanta a los enemigos que alcanza y obtiene velocidad de movimiento. Se puede activar dos veces."
       }
     },
     "Mordekaiser": {
