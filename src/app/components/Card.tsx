@@ -4,10 +4,13 @@ import Link from "next/link";
 import ReplayIcon from "@mui/icons-material/Replay";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
+import CreateIcon from "@mui/icons-material/Create";
 
 interface CardProps {
   initialName: string;
   role: string;
+  colorCycle: string[];
+  numberColor: number;
   champion: { id: string; name: string; imageUrl: string } | null;
   isLocked: boolean;
   changeIcon: () => void;
@@ -24,21 +27,11 @@ const roleIcons = [
   "FillIcon.png",
 ];
 
-const colorCycle = [
-  "bg-[#093a63]",
-  "bg-[#8e6b92]",//
-  "bg-[#012a30]",//
-  "bg-[#56000b]",
-  "bg-[#2b190d]",
-  "bg-[#3a3329]",
-  "bg-[#292f47]",
-  "bg-[#1c2b24]",
-  "bg-[#212121]",
-];
-
 export default function Card({
   initialName,
   role,
+  colorCycle,
+  numberColor,
   champion,
   isLocked,
   changeIcon,
@@ -47,8 +40,8 @@ export default function Card({
 }: CardProps) {
   const [name, setName] = useState(initialName);
 
-  const [cardColorIndex, setCardColorIndex] = useState(0);
-  const [buttonColorIndex, setButtonColorIndex] = useState(1);
+  const [cardColorIndex, setCardColorIndex] = useState(numberColor);
+  const [buttonColorIndex, setButtonColorIndex] = useState(numberColor + 1);
 
   const changeRole = () => {
     if (isLocked) return;
@@ -65,73 +58,116 @@ export default function Card({
     setButtonColorIndex((prevIndex) => (prevIndex + 1) % colorCycle.length);
   };
 
-  return (
-    <div
-      className={`relative flex flex-col items-center w-[180px] border border-2 border-[#CBAB70] border-b-[#0a0a0a]  ${colorCycle[cardColorIndex]}`}
-    >
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="text-lg font-bold py-3 bg-black text-white w-full text-center"
-      />
+  const getChampionNames = (championName: string) => {
+    if (championName === "Nunu & Willump") return "Nunu";
+    else if (championName === "Renata Glasc") return "Renata";
+    else return championName;
+  };
 
-      <div className="flex flex-col items-center">
-        {champion && (
-          <>
+  return (
+    <div className="flex flex-col items-center">
+      <div
+        className={`relative flex flex-col items-center w-[180px] h-[489] border border-2 border-[#CBAB70] border-b-transparent`}
+        style={{ background: colorCycle[cardColorIndex] }}
+      >
+        {/* Color card button */}
+        <div className="start-[10px] top-[12px] absolute">
+          <button
+            onClick={handleFButtonClick}
+            className={`border-solid border-2 border-black w-7 h-7 rounded-full`}
+            style={{ background: colorCycle[buttonColorIndex] }}
+            title="Siguiente color"
+          />
+        </div>
+
+        {/* Input name */}
+        <div className="group pointer-events-auto">
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="text-lg font-bold py-3 bg-black text-white w-full text-center outline-none peer z-[3]"
+          />
+          {/* Pencil icon */}
+          <CreateIcon className="pointer-events-none end-[14px] top-[14px] absolute opacity-0 transition-opacity duration-200 group-hover:opacity-100 peer-focus:opacity-100 z-[2]" />
+        </div>
+
+        {/* champion */}
+        <div className="flex flex-col items-center">
+          {/* image */}
+          {champion && (
             <Link href={`/champions/${champion.id}`} target="_blank">
               <Image
                 src={champion.imageUrl}
                 alt={champion.id}
-                width={206}
-                height={100}
+                width={200}
+                height={364}
                 className="hover:filter hover:brightness-50 transition-all"
+                unoptimized
               />
             </Link>
+          )}
+
+          {/* name */}
+          {champion && (
             <div className="flex">
               <h3 className="text-lg font-bold mt-1">
-                {champion.name === "Nunu & Willump" ? "Nunu" : champion.name}
+                {getChampionNames(champion.name)}
               </h3>
+
+              {/* Reroll champ */}
               <button
                 onClick={randomizeChampion}
-                className="absolute end-[0] bg-[#1b6d6b] hover:bg-[#2D7F79] w-8 h-8"
+                className="absolute end-[0] bottom-[81.4px] bg-[#1b6d6b] hover:bg-[#2D7F79] w-8 h-8"
+                title="Campeón Random"
               >
                 <ReplayIcon />
               </button>
             </div>
-          </>
-        )}
-      </div>
-      <div className="end-[10] top-[11] absolute">
-        <button
-          onClick={handleFButtonClick}
-          className={`border-solid border-2 border-black  w-7 h-7 rounded-full ${colorCycle[buttonColorIndex]}`}
-        />
-      </div>
-
-      <div className="flex justify-center gap-2 h-[70] items-center mt-1 mb-2">
-        <div
-          onClick={changeRole}
-          className={`cursor-pointer ${isLocked ? "opacity-65" : ""}`}
-        >
-          <Image
-            src={`/icons/${role}`}
-            alt="RoleIcon"
-            width={45}
-            height={45}
-            className="hover:opacity-80"
-          />
+          )}
         </div>
 
-        <button onClick={changeIcon} className="cursor-pointer absolute end-[35]">
-          {isLocked ? (
-            <LockIcon />
-          ) : (
-            <LockOpenIcon />
-          )}
-        </button>
+        <div className="flex justify-center gap-2 h-[70px] items-center mt-1 mb-2">
+          {/* role */}
+          <div
+            onClick={changeRole}
+            className={`cursor-pointer ${isLocked ? "opacity-65" : ""}`}
+            title="Cambiar rol"
+          >
+            <Image
+              src={`/${role}`}
+              alt="RoleIcon"
+              width={45}
+              height={45}
+              className="hover:opacity-80"
+              unoptimized
+            />
+          </div>
+
+          {/* Lock role */}
+          <button
+            onClick={changeIcon}
+            className="cursor-pointer absolute end-[35px]"
+            title="Bloquear Rol"
+          >
+            {isLocked ? <LockIcon /> : <LockOpenIcon />}
+          </button>
+        </div>
+        <div className="h-[43px] w-[180px] border-x-2 border-[#CBAB70] absolute bottom-[-43px]"></div>
+        <div className="w-[99px] border-b-2 border-[#CBAB70] bg-black absolute end-[-6px] bottom-[-23.5px] rotate-[0.425rad]"></div>
+        <div className="w-[99px] border-b-2 border-[#CBAB70] bg-black absolute start-[-6px] bottom-[-23.5px] rotate-[-0.425rad]"></div>
       </div>
-      <div className="w-0 h-0 border-l-[88px] border-l-transparent border-r-[88px] border-r-transparent border-b-[40px] border-b-[#0a0a0a]"></div>
+      <div
+        style={{
+          borderLeftWidth: "88px",
+          borderLeftColor: colorCycle[cardColorIndex],
+          borderRightWidth: "88px",
+          borderRightColor: colorCycle[cardColorIndex],
+          borderBottomWidth: "40px",
+          borderBottomColor: "transparent",
+        }}
+        className="w-0 h-0"
+      ></div>
     </div>
   );
 }

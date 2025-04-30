@@ -112,7 +112,7 @@
     "Ashe": {
       "id": "Ashe",
       "roles": ["Adc"],
-      "passiveDescription": "Pasiva: Habla mucho y sus básicos y habilidades ralentizan.",
+      "passiveDescription": "Pasiva: Habla mucho. Sus básicos y habilidades ralentizan. Con más daño crítico la ralentización es mayor.",
       "spellsDescription": {
         "Ashe_q": "Q: Se activa al realizar cuatro ataques básicos. Activada sus básicos ahora golpean en rafaga.",
         "Ashe_w": "W: Tira muchas flechas en cono que ralentizan.",
@@ -123,12 +123,12 @@
     "AurelionSol": {
       "id": "AurelionSol",
       "roles": ["Mid"],
-      "passiveDescription": "Pasiva: Al hacer daño evoluciona sus habilidades.",
+      "passiveDescription": "Pasiva: Al hacer daño colecciona cargas que evolucionan sus habilidades.",
       "spellsDescription": {
         "AurelionSol_q": "Q: Lanza un rayo, si carga hace daño extra. Evolucionada hace más daño.",
-        "AurelionSol_w": "W: Vuela y hace más daño. Evolucionada vuela más.",
+        "AurelionSol_w": "W: Vuela. Mientras vuela siempre tendrá disposible su Q y hace más daño. Evolucionada vuela más.",
         "AurelionSol_e": "E: Deja un agujero negro que ejecuta si el objetivo tiene poca vida. Evolucionada es más grande.",
-        "AurelionSol_r": "R: Hace que caiga una estrella que aturde. Evolucionada explota."
+        "AurelionSol_r": "R: Hace que caiga una estrella que aturde. Evolucionada explota haciendo daño en gran área."
       }
     },
     "Aurora": {
@@ -324,7 +324,7 @@
       "passiveDescription": "Pasiva: Cada tres ataques al mismo objetivo le da daño adicional y también velocidad de movimiento si es un campeón.",
       "spellsDescription": {
         "Ekko_q": "Q: Lanza una granada temporal que ralentiza y hace daño a todos los objetivos en su camino, también golpea de vuelta.",
-        "Ekko_w": "W: Lanza una convergencia que tras poco tiempo crea una cúpula que ralentiza a los enemigos, si ekko toca esta cúpula aturde todos los objetivos dentro.",
+        "Ekko_w": "W: Lanza una convergencia que tras poco tiempo crea una cúpula que ralentiza a los enemigos, si ekko toca esta cúpula aturde todos los objetivos dentro y gana un escudo.",
         "Ekko_e": "E: Realiza un salto y su siguiente ataque básico se puede lanzar con rango, causa daño adicional y lo deja junto al objetivo.",
         "Ekko_r": "R: Vuelve unos segundos en el tiempo, a una posición en la que se encontraba anteriormente y se cura parte de su vida."
       }
@@ -639,7 +639,7 @@
     },
     "Karthus": {
       "id": "Karthus",
-      "roles": ["Jg"],
+      "roles": ["Jg", "Adc"],
       "passiveDescription": "Pasiva: Tras morir, se convierte en espíritu y sigue lanzando hechizos.",
       "spellsDescription": {
         "Karthus_q": "Q: Tira una bola de energia en una ubicación.",
@@ -863,8 +863,8 @@
       "passiveDescription": "Pasiva: Después de unos segundos sin recibir daño, gana un escudo que lo protege del siguiente ataque o habilidad.",
       "spellsDescription": {
         "Malzahar_q": "Q: Abre dos portales que disparan proyectiles hacia el centro y estos dañan y silencian a los enemigos alcanzados.",
-        "Malzahar_w": "W: Invoca Entes del Vacío para atacar a los enemigos cercanos. Dan prioridad a los objetivos marcados con su E.",
-        "Malzahar_e": "E: Infecta a un objetivo lo cual le causa daño por segundo. Si el objetivo muere la infección se transfiere al enemigo más cercano.",
+        "Malzahar_w": "W: Invoca Entes del Vacío para atacar a los enemigos cercanos. Dan prioridad a los objetivos marcados con su E. Usar otra habilidad aumenta en uno los Entes invocados (máximo de 3).",
+        "Malzahar_e": "E: Infecta a un objetivo, esto causa daño por segundo. Golpear a un infectado con su Q o R reinicia la duración. Si el objetivo muere la infección se transfiere al enemigo más cercano y recuperas un poco de maná.",
         "Malzahar_r": "R: Malzahar suprime a un campeón enemigo."
       }
     },
@@ -1346,7 +1346,7 @@
       "roles": ["Top"],
       "passiveDescription": "Pasiva: Obtiene velocidad de movimiento al tocar campeón aliado o enemigo.",
       "spellsDescription": {
-        "Singed_q": "Q: Deja un rastro de veneno por donde pasa que daña a los enemigos.",
+        "Singed_q": "Q: Deja un rastro de veneno por donde pasa que daña a los enemigos. Si un minion aliado ejecuta a un minion enemigo envenenado, Singed obtiene el oro.",
         "Singed_w": "W: Lanza un frasco de Megadhesivo al suelo que ralentiza y no deja utilizar desplazamiento a todos los enemigos que lo pisen.",
         "Singed_e": "E: Daña un enemigo y lo manda a volar hacia atrás de Singed. Se aturde si cae sobre el Megadhesivo.",
         "Singed_r": "R: Aumenta el daño y su veneno causa Heridas Graves."
@@ -1775,7 +1775,7 @@
       "roles": ["Top"],
       "passiveDescription": "Pasiva: Puede invocar a caminantes de la niebla para que ataquen a los enemigos cercanos. Cada pocos enemigos que mueren cerca dejan una tumba.",
       "spellsDescription": {
-        "Yorick_q": "Q: Inflige daño adicional en su siguiente ataque y se cura. Si muere un objetivo, se cavará una tumba. Presionar esta habilidad al tener 3 o 4 tumbas invocará los entes de la niebla.",
+        "Yorick_q": "Q: Inflige daño adicional en su siguiente ataque y se cura. Si muere un objetivo o es un campeón/monstruo grande, se cavará una tumba. Presionar esta habilidad al tener 3 o 4 tumbas invocará los entes de la niebla.",
         "Yorick_w": "W: Invoca un muro destruible en la ubicación objetivo que bloqueará el movimiento enemigo.",
         "Yorick_e": "E: Lanza un glóbulo de Niebla Negra que inflige daño, ralentiza y marca a los enemigos. Los caminantes de la niebla saltan hacia los enemigos marcados y les hace daño.",
         "Yorick_r": "R: Invoca a la Dama de la Niebla, que provoca que los ataques de Yorick al objetivo de la Dama inflijan daño adicional. La Dama además convertirá a los enemigos muertos en caminantes."

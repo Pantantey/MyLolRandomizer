@@ -2,11 +2,14 @@
   "name": "testing",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://pantantey1.github.io/MyRandomizer",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -14,7 +17,9 @@
     "@mui/icons-material": "^6.4.5",
     "@mui/material": "^6.4.5",
     "@types/react-router-dom": "^5.3.3",
-    "next": "15.1.7",
+    "@vercel/analytics": "^1.5.0",
+    "framer-motion": "^12.6.2",
+    "next": "^15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.3.0"

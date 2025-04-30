@@ -1,128 +1,198 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
-import { styled } from '@mui/material/styles';
-import Link from 'next/link';
+"use client";
+import * as React from "react";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Button,
+  Divider,
+  Drawer,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+import Link from "next/link";
+import { styled } from "@mui/material/styles";
+import Image from "next/image";
 
-const pages = ['Inicio','Campeones'];
-
-const StyledButton = styled(Button)({
-  '&:hover': {
-    backgroundColor:'#0f507c',
+const StyledButton = styled(Button)(() => ({
+  "&:hover": {
+    backgroundColor: "#0f507c",
   },
-});
+  fontSize: "16px",
+  textTransform: "none",
+  fontWeight: "bold",
+  color: "white",
+}));
 
-function ResponsiveAppBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+const Logo = () => (
+  <Link href="/" passHref>
+    <Image
+      src="/LogoIcon.png"
+      alt="Logo"
+      width={40}
+      height={40}
+      style={{ cursor: "pointer" }}
+      unoptimized
+    />
+  </Link>
+);
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
+function Header() {
+  const [openDrawer, setOpenDrawer] = React.useState(false);
+
+  const handleOpenNavMenu = () => {
+    setOpenDrawer(true);
   };
 
   const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
+    setOpenDrawer(false);
   };
 
   return (
-    <AppBar position="static" sx={{backgroundColor: '#093a63', borderBottom: "1px solid #CBAB70"}}>
-      <Container maxWidth="xl" sx={{display:'flex', justifyContent:'center'}}>
-        <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="../"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
+    <AppBar
+      position="sticky"
+      sx={{ backgroundColor: "#093a63", borderBottom: "1px solid #CBAB70" }}
+    >
+      <Toolbar
+        sx={{
+          justifyContent: "space-between",
+          maxWidth: "1024px",
+          width: "100%",
+          margin: "0 auto",
+          position: "relative",
+        }}
+      >
+        <Box sx={{ display: { xs: "none", sm: "flex" }, flexGrow: 1 }}>
+          <Logo />
+        </Box>
+        <Box
+          sx={{
+            display: { xs: "none", sm: "flex" },
+            flexGrow: 1,
+            justifyContent: "flex-end",
+          }}
+        >
+          <Link href="/" passHref>
+            <StyledButton>INICIO</StyledButton>
+          </Link>
+          <Link href="/champions" passHref>
+            <StyledButton>CAMPEONES</StyledButton>
+          </Link>
+          <Link href="/stories" passHref>
+            <StyledButton>HISTORIAS</StyledButton>
+          </Link>
+          
+          <Link href="/apoyo" passHref>
+            <StyledButton>APOYO</StyledButton>
+          </Link>
+        </Box>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{ display: { xs: 'block', md: 'none' } }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Link href={`/${page === 'Inicio' ? '' : 'champions'}`} passHref>
-                    <Typography textAlign="center">{page}</Typography>
-                  </Link>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+        <Box
+          sx={{
+            display: { xs: "flex", sm: "none" },
+            flexGrow: 1,
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <IconButton
+            size="large"
+            aria-label="menu"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleOpenNavMenu}
+            color="inherit"
+            sx={{ position: "absolute", left: "20px" }}
+          >
+            <MenuIcon />
+          </IconButton>
+
+          <Box
             sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
+              display: "flex",
+              justifyContent: "center",
               flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+              visibility: openDrawer ? "hidden" : "visible",
             }}
           >
-            LOGO
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Link key={page} href={`/${page === 'Inicio' ? '' : 'champions'}`} passHref>
-                <StyledButton sx={{ my: 2, color: 'white', display: 'block' }}>
-                  {page}
-                </StyledButton>
-              </Link>
-            ))}
+            <Logo />
           </Box>
-        </Toolbar>
-      </Container>
+        </Box>
+
+        <Drawer
+          anchor="left"
+          open={openDrawer}
+          onClose={handleCloseNavMenu}
+          sx={{
+            "& .MuiDrawer-paper": {
+              backgroundColor: "#093a63",
+              width: "200px",
+              padding: "20px",
+            },
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: "20px",
+              position: "relative",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                flexGrow: 1,
+                marginTop: "20px",
+              }}
+            >
+              <Logo />
+            </Box>
+            <IconButton
+              onClick={handleCloseNavMenu}
+              sx={{
+                color: "white",
+                position: "absolute",
+                right: "-15px",
+                top: "-5px",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Divider sx={{ my: 1, width: "100%", backgroundColor: "white" }} />
+            <Link href="/" passHref>
+              <StyledButton onClick={handleCloseNavMenu}>INICIO</StyledButton>
+            </Link>
+            <Link href="/champions" passHref>
+              <StyledButton onClick={handleCloseNavMenu}>CAMPEONES</StyledButton>
+            </Link>
+            <Link href="/stories" passHref>
+              <StyledButton onClick={handleCloseNavMenu}>HISTORIAS</StyledButton>
+            </Link>
+            
+            <Link href="/apoyo" passHref>
+              <StyledButton onClick={handleCloseNavMenu}>APOYO</StyledButton>
+            </Link>
+          </Box>
+        </Drawer>
+      </Toolbar>
     </AppBar>
   );
 }
 
-export default ResponsiveAppBar;
+export default Header;

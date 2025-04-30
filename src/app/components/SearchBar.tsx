@@ -17,7 +17,6 @@ export default function SearchBar({ search, setSearch, selectedRole, setSelected
 
   return (
     <div className="flex items-center gap-4 w-full max-w-lg">
-      {/* Roles */}
       <div className="flex gap-2 items-center">
         {roles.map((role) => (
           <div
@@ -28,23 +27,23 @@ export default function SearchBar({ search, setSearch, selectedRole, setSelected
             onClick={() => handleRoleClick(role)}
           >
             <Image
-              src={`/icons/${role}Icon.png`}
+              src={`/${role}Icon.png`}
               alt={`${role} icon`}
               width={27}
               height={27}
+              unoptimized
             />
           </div>
         ))}
       </div>
 
-      {/* Input con botón "X" */}
       <div className="relative w-[165px]">
         <input
           type="text"
           placeholder="Buscar campeón"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="p-2 pr-8 border border-[#CBAB70] rounded-sm w-full h-[33] bg-[#0A0A0A]"
+          className="p-2 pr-8 border border-[#CBAB70] rounded-sm w-full h-[33] bg-[#0A0A0A] outline-none"
         />
         {search.length > 0 && (
           <button
